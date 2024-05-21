@@ -2,16 +2,17 @@ from library import Library
 
 def main():
     library = Library()
+    print()
     print("Welcome to the Library Management System with Database Integration!")
     
     while True:
         print()
         main_menu_option = input("""Below is a Menu for you to select from. Please enter the number assigned to your desired choice:
             Menu:
-            1 - Book Operations [add a book/ check out or return a book/ search or display books]
-            2 - User Operations [add a new user/ view or display users/ view user's borrowed books]
-            3 - Author Operations [add a new author/ view or display an author]
-            4 - Genre Operations [add a new genre/ view or display genres]
+            1 - Book Operations
+            2 - User Operations
+            3 - Author Operations 
+            4 - Genre Operations 
             5 - Exit
             """)
         print()
