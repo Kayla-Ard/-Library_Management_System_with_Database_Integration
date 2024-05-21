@@ -19,7 +19,6 @@ def connect_db():
 
         # checking if the connection is succesful
         if conn.is_connected(): #returns True if a connection was successfully made
-            print("(*￣3￣)╭")
             return conn
             
         # handling any connection errors
