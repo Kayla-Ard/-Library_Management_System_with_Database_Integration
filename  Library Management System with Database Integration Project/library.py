@@ -156,16 +156,22 @@ class Library:
         print("Genre successfully added!")     
         
     def return_book(self): 
-        isbn = input('Enter the last 10 digits of the isbn of the book you would like to return, in this form "##-#####-##-#": ')
-        verified_isbn = re.match(r"\d{2}-\d{5}-\d{2}-\d{1}", isbn) 
+        book_isbn = input('Enter the last 10 digits of the isbn of the book you would like to return, in this form "##-#####-##-#": ')
+        verified_isbn = re.match(r"\d{2}-\d{5}-\d{2}-\d{1}", book_isbn) 
         if verified_isbn:
             print("Valid ISBN")
-            if isbn in self.books and isbn in self.current_rented_books:
-                title = self.books[isbn].get_title() 
-                self.books[isbn].return_book()
-                del self.current_rented_books[isbn]
+            if book_isbn in self.books and book_isbn in self.current_rented_books:
+                title = self.books[book_isbn].get_title() 
+                self.books[book_isbn].return_book()
+                del self.current_rented_books[book_isbn]
                 print(f"Book '{title}' was returned")
                 print()
+                conn = connect_db()
+                cursor = conn.cursor()
+                query = "INSERT INTO Borrowed_Books (book_isbn) VALUES (%s)"
+                book = (book_isbn)
+                cursor.execute(query, book)
+                conn.commit()
             else:
                 print("No book found by that information")
         else:
@@ -182,6 +188,12 @@ class Library:
                 print("Here is the book that matches the ISBN you entered:")
                 print(book)
                 print()
+                conn = connect_db()
+                cursor = conn.cursor()
+                query = "INSERT INTO Book (isbn) VALUES (%s)"
+                book = (isbn)
+                cursor.execute(query, book)
+                conn.commit()
             else:
                 print("That ISBN did not match any of the books in the library.")   
                 self.search_for_book()
@@ -195,7 +207,13 @@ class Library:
         for isbn, book in self.books.items():
             print(book)
             print()
-
+        conn = connect_db()
+        cursor = conn.cursor()
+        query = "INSERT INTO Book (isbn) VALUES (%s)"
+        book = (isbn)
+        cursor.execute(query, book)
+        conn.commit()
+    
     def view_user_details(self): 
         library_id = input("Enter the 6 digit library ID of the user you would like to view details on: ")
         user = self.users.get(int(library_id))
@@ -203,6 +221,12 @@ class Library:
             print("Here are the user's details: ")
             print(user)
             print()
+            conn = connect_db()
+            cursor = conn.cursor()
+            query = "INSERT INTO User (user, library_id) VALUES (%s, %s)"
+            user = (user, library_id)
+            cursor.execute(query, user)
+            conn.commit()
         else:
             print("The library id you entered does not match any of the user's.")
             self.view_user_details()
@@ -211,6 +235,12 @@ class Library:
         print("Here are the details of all users: ")
         for user in self.users.values():
             print(user)
+        conn = connect_db()
+        cursor = conn.cursor()
+        query = "INSERT INTO User (user) VALUES (%s)"
+        user = (user)
+        cursor.execute(query, user)
+        conn.commit()
 
         def borrowed_books(self): 
             library_id = input("Enter the 6 digit library id of the user you would like to view borrowed books for: ")
@@ -220,6 +250,12 @@ class Library:
                 print(f"Here is a list of borrowed books by {user.name}: ")
                 for book in user.borrowed_books:
                     print(book.title)
+                conn = connect_db()
+                cursor = conn.cursor()
+                query = "INSERT INTO Borrowed_Books (library_id, user) VALUES (%s, %s)"
+                borrowed_books = (library_id, user)
+                cursor.execute(query, borrowed_books)
+                conn.commit()
             else:
                 print("The library id you entered does not match any of the users.")
                 self.borrowed_books()
@@ -229,6 +265,12 @@ class Library:
         author_last_name = input("Enter book author last name: ").title()
         author = author_first_name + " " + author_last_name
         for key, value in self.authors.items():
+            conn = connect_db()
+            cursor = conn.cursor()
+            query = "INSERT INTO Author (author) VALUES (%s)"
+            author = (author)
+            cursor.execute(query, author)
+            conn.commit()
             if key == author:
                 print()
                 print(f'Author: {author}, Biography: {value}')
@@ -241,14 +283,31 @@ class Library:
         print("Here are the details of all the Authors: ")
         for author in self.authors:
             print(author)
+        conn = connect_db()
+        cursor = conn.cursor()
+        query = "INSERT INTO Author (author) VALUES (%s)"
+        author = (author)
+        cursor.execute(query, author)
+        conn.commit()
         
     def view_genre_details(self): 
         print("Here is a list of genre's with the assigned category names: ")
         for genre in self.genres:
             print(f"Genre: {genre.genre_name} |  Category: {genre.genre_category}")
-            
+        conn = connect_db()
+        cursor = conn.cursor()
+        query = "INSERT INTO Genre (genre) VALUES (%s)"
+        genre = (genre)
+        cursor.execute(query, genre)
+        conn.commit()    
+        
     def display_genres(self): 
         print("Here is the list of genres: ")
         for genre in self.genres:
             print(genre.genre_name)
-    
+        conn = connect_db()
+        cursor = conn.cursor()
+        query = "INSERT INTO Genre (genre) VALUES (%s)"
+        genre = (genre)
+        cursor.execute(query, genre)
+        conn.commit()
